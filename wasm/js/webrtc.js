@@ -170,7 +170,7 @@
 			},
 		},
 
-		rtcCreatePeerConnection: function(pUrls, pUsernames, pPasswords, nIceServers) {
+		js_rtcCreatePeerConnection: function(pUrls, pUsernames, pPasswords, nIceServers) {
 			if(!window.RTCPeerConnection) return 0;
 			var iceServers = [];
 			for(var i = 0; i < nIceServers; ++i) {
@@ -199,7 +199,7 @@
 			return WEBRTC.registerPeerConnection(new RTCPeerConnection(config));
 		},
 
-		rtcDeletePeerConnection: function(pc) {
+		js_rtcDeletePeerConnection: function(pc) {
 			var peerConnection = WEBRTC.peerConnectionsMap[pc];
 			if(peerConnection) {
 				peerConnection.close();
@@ -208,7 +208,7 @@
 			}
 		},
 
-		rtcGetLocalDescription: function(pc) {
+		js_rtcGetLocalDescription: function(pc) {
 			if(!pc) return 0;
 			var peerConnection = WEBRTC.peerConnectionsMap[pc];
 			var localDescription = peerConnection.localDescription;
@@ -218,7 +218,7 @@
 			return sdp;
 		},
 
-		rtcGetLocalDescriptionType: function(pc) {
+		js_rtcGetLocalDescriptionType: function(pc) {
 			if(!pc) return 0;
 			var peerConnection = WEBRTC.peerConnectionsMap[pc];
 			var localDescription = peerConnection.localDescription;
@@ -228,7 +228,7 @@
 			return type;
 		},
 
-    rtcGetRemoteDescription: function(pc) {
+    js_rtcGetRemoteDescription: function(pc) {
 			if(!pc) return 0;
 			var peerConnection = WEBRTC.peerConnectionsMap[pc];
 			var remoteDescription = peerConnection.remoteDescription;
@@ -238,7 +238,7 @@
 			return sdp;
 		},
 
-		rtcGetRemoteDescriptionType: function(pc) {
+		js_rtcGetRemoteDescriptionType: function(pc) {
 			if(!pc) return 0;
 			var peerConnection = WEBRTC.peerConnectionsMap[pc];
 			var remoteDescription = peerConnection.remoteDescription;
@@ -248,7 +248,7 @@
 			return type;
 		},
 
-		rtcCreateDataChannel: function(pc, pLabel, unordered, maxRetransmits, maxPacketLifeTime) {
+		js_rtcCreateDataChannel: function(pc, pLabel, unordered, maxRetransmits, maxPacketLifeTime) {
 			if(!pc) return 0;
 			var label = UTF8ToString(pLabel);
 			var peerConnection = WEBRTC.peerConnectionsMap[pc];
@@ -264,7 +264,7 @@
 			return WEBRTC.registerDataChannel(channel);
 		},
 
- 		rtcDeleteDataChannel: function(dc) {
+ 		js_rtcDeleteDataChannel: function(dc) {
 			var dataChannel = WEBRTC.dataChannelsMap[dc];
 			if(dataChannel) {
 				dataChannel.rtcUserDeleted = true;
@@ -272,7 +272,7 @@
 			}
 		},
 
-		rtcSetDataChannelCallback: function(pc, dataChannelCallback) {
+		js_rtcSetDataChannelCallback: function(pc, dataChannelCallback) {
 			if(!pc) return;
 			var peerConnection = WEBRTC.peerConnectionsMap[pc];
 			peerConnection.ondatachannel = function(evt) {
@@ -283,43 +283,43 @@
 			};
 		},
 
-		rtcSetLocalDescriptionCallback: function(pc, descriptionCallback) {
+		js_rtcSetLocalDescriptionCallback: function(pc, descriptionCallback) {
 			if(!pc) return;
 			var peerConnection = WEBRTC.peerConnectionsMap[pc];
 			peerConnection.rtcDescriptionCallback = descriptionCallback;
 		},
 
-		rtcSetLocalCandidateCallback: function(pc, candidateCallback) {
+		js_rtcSetLocalCandidateCallback: function(pc, candidateCallback) {
 			if(!pc) return;
 			var peerConnection = WEBRTC.peerConnectionsMap[pc];
 			peerConnection.rtcCandidateCallback = candidateCallback;
 		},
 
-		rtcSetStateChangeCallback: function(pc, stateChangeCallback) {
+		js_rtcSetStateChangeCallback: function(pc, stateChangeCallback) {
 			if(!pc) return;
 			var peerConnection = WEBRTC.peerConnectionsMap[pc];
 			peerConnection.rtcStateChangeCallback = stateChangeCallback;
 		},
 
-		rtcSetIceStateChangeCallback: function(pc, iceStateChangeCallback) {
+		js_rtcSetIceStateChangeCallback: function(pc, iceStateChangeCallback) {
 			if(!pc) return;
 			var peerConnection = WEBRTC.peerConnectionsMap[pc];
 			peerConnection.rtcIceStateChangeCallback = iceStateChangeCallback;
 		},
 
-		rtcSetGatheringStateChangeCallback: function(pc, gatheringStateChangeCallback) {
+		js_rtcSetGatheringStateChangeCallback: function(pc, gatheringStateChangeCallback) {
 			if(!pc) return;
 			var peerConnection = WEBRTC.peerConnectionsMap[pc];
 			peerConnection.rtcGatheringStateChangeCallback = gatheringStateChangeCallback;
 		},
 
-		rtcSetSignalingStateChangeCallback: function(pc, signalingStateChangeCallback) {
+		js_rtcSetSignalingStateChangeCallback: function(pc, signalingStateChangeCallback) {
 			if(!pc) return;
 			var peerConnection = WEBRTC.peerConnectionsMap[pc];
 			peerConnection.rtcSignalingStateChangeCallback = signalingStateChangeCallback;
 		},
 
-		rtcSetRemoteDescription: function(pc, pSdp, pType) {
+		js_rtcSetRemoteDescription: function(pc, pSdp, pType) {
 			var description = new RTCSessionDescription({
 				sdp: UTF8ToString(pSdp),
 				type: UTF8ToString(pType),
@@ -343,7 +343,7 @@
 				});
 		},
 
-		rtcAddRemoteCandidate: function(pc, pCandidate, pSdpMid) {
+		js_rtcAddRemoteCandidate: function(pc, pCandidate, pSdpMid) {
 			var iceCandidate = new RTCIceCandidate({
 				candidate: UTF8ToString(pCandidate),
 				sdpMid: UTF8ToString(pSdpMid),
@@ -355,32 +355,32 @@
 				});
 		},
 
-		rtcGetDataChannelLabel: function(dc, pBuffer, size) {
+		js_rtcGetDataChannelLabel: function(dc, pBuffer, size) {
 			if(!dc) return 0;
 			var label = WEBRTC.dataChannelsMap[dc].label;
 			stringToUTF8(label, pBuffer, size);
 			return lengthBytesUTF8(label);
 		},
 
-		rtcGetDataChannelUnordered: function(dc) {
+		js_rtcGetDataChannelUnordered: function(dc) {
 			if(!dc) return 0;
 			var dataChannel = WEBRTC.dataChannelsMap[dc];
 			return dataChannel.ordered ? 0 : 1;
 		},
 
-		rtcGetDataChannelMaxPacketLifeTime: function(dc) {
+		js_rtcGetDataChannelMaxPacketLifeTime: function(dc) {
 			if(!dc) return -1;
 			var dataChannel = WEBRTC.dataChannelsMap[dc];
 			return dataChannel.maxPacketLifeTime !== null ? dataChannel.maxPacketLifeTime : -1;
 		},
 
-		rtcGetDataChannelMaxRetransmits: function(dc) {
+		js_rtcGetDataChannelMaxRetransmits: function(dc) {
 			if(!dc) return -1;
 			var dataChannel = WEBRTC.dataChannelsMap[dc];
 			return dataChannel.maxRetransmits !== null ? dataChannel.maxRetransmits : -1;
 		},
 
-		rtcSetOpenCallback: function(dc, openCallback) {
+		js_rtcSetOpenCallback: function(dc, openCallback) {
 			if(!dc) return;
 			var dataChannel = WEBRTC.dataChannelsMap[dc];
 			var cb = function() {
@@ -392,7 +392,7 @@
 			if(dataChannel.readyState == 'open') setTimeout(cb, 0);
 		},
 
-		rtcSetErrorCallback: function(dc, errorCallback) {
+		js_rtcSetErrorCallback: function(dc, errorCallback) {
 			if(!dc) return;
 			var dataChannel = WEBRTC.dataChannelsMap[dc];
 			var cb = function(evt) {
@@ -405,7 +405,7 @@
 			dataChannel.onerror = cb;
 		},
 
-		rtcSetMessageCallback: function(dc, messageCallback) {
+		js_rtcSetMessageCallback: function(dc, messageCallback) {
 			if(!dc) return;
 			var dataChannel = WEBRTC.dataChannelsMap[dc];
 			dataChannel.onmessage = function(evt) {
@@ -432,7 +432,7 @@
 			};
 		},
 
-		rtcSetBufferedAmountLowCallback: function(dc, bufferedAmountLowCallback) {
+		js_rtcSetBufferedAmountLowCallback: function(dc, bufferedAmountLowCallback) {
 			if(!dc) return;
 			var dataChannel = WEBRTC.dataChannelsMap[dc];
 			var cb = function(evt) {
@@ -443,19 +443,19 @@
 			dataChannel.onbufferedamountlow = cb;
 		},
 
-		rtcGetBufferedAmount: function(dc) {
+		js_rtcGetBufferedAmount: function(dc) {
 			if(!dc) return 0;
 			var dataChannel = WEBRTC.dataChannelsMap[dc];
 			return dataChannel.bufferedAmount;
 		},
 
-		rtcSetBufferedAmountLowThreshold: function(dc, threshold) {
+		js_rtcSetBufferedAmountLowThreshold: function(dc, threshold) {
 			if(!dc) return;
 			var dataChannel = WEBRTC.dataChannelsMap[dc];
 			dataChannel.bufferedAmountLowThreshold = threshold;
 		},
 
-		rtcSendMessage: function(dc, pBuffer, size) {
+		js_rtcSendMessage: function(dc, pBuffer, size) {
 			if(!dc) return -1;
 			var dataChannel = WEBRTC.dataChannelsMap[dc];
 			if(dataChannel.readyState != 'open') return -1;
@@ -476,7 +476,7 @@
 			}
 		},
 
-		rtcSetUserPointer: function(i, ptr) {
+		js_rtcSetUserPointer: function(i, ptr) {
 			if(WEBRTC.peerConnectionsMap[i]) WEBRTC.peerConnectionsMap[i].rtcUserPointer = ptr;
 			if(WEBRTC.dataChannelsMap[i]) WEBRTC.dataChannelsMap[i].rtcUserPointer = ptr;
 		},

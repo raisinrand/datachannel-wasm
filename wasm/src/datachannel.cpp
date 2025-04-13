@@ -29,19 +29,19 @@
 #include <stdexcept>
 
 extern "C" {
-extern void rtcDeleteDataChannel(int dc);
-extern int rtcGetDataChannelLabel(int dc, char *buffer, int size);
-extern int rtcGetDataChannelUnordered(int dc);
-extern int rtcGetDataChannelMaxPacketLifeTime(int dc);
-extern int rtcGetDataChannelMaxRetransmits(int dc);
-extern void rtcSetOpenCallback(int dc, void (*openCallback)(void *));
-extern void rtcSetErrorCallback(int dc, void (*errorCallback)(const char *, void *));
-extern void rtcSetMessageCallback(int dc, void (*messageCallback)(const char *, int, void *));
-extern void rtcSetBufferedAmountLowCallback(int dc, void (*bufferedAmountLowCallback)(void *));
-extern int rtcGetBufferedAmount(int dc);
-extern void rtcSetBufferedAmountLowThreshold(int dc, int threshold);
-extern int rtcSendMessage(int dc, const char *buffer, int size);
-extern void rtcSetUserPointer(int i, void *ptr);
+extern void js_rtcDeleteDataChannel(int dc);
+extern int js_rtcGetDataChannelLabel(int dc, char *buffer, int size);
+extern int js_rtcGetDataChannelUnordered(int dc);
+extern int js_rtcGetDataChannelMaxPacketLifeTime(int dc);
+extern int js_rtcGetDataChannelMaxRetransmits(int dc);
+extern void js_rtcSetOpenCallback(int dc, void (*openCallback)(void *));
+extern void js_rtcSetErrorCallback(int dc, void (*errorCallback)(const char *, void *));
+extern void js_rtcSetMessageCallback(int dc, void (*messageCallback)(const char *, int, void *));
+extern void js_rtcSetBufferedAmountLowCallback(int dc, void (*bufferedAmountLowCallback)(void *));
+extern int js_rtcGetBufferedAmount(int dc);
+extern void js_rtcSetBufferedAmountLowThreshold(int dc, int threshold);
+extern int js_rtcSendMessage(int dc, const char *buffer, int size);
+extern void js_rtcSetUserPointer(int i, void *ptr);
 }
 
 namespace rtc {
@@ -85,14 +85,14 @@ void DataChannel::BufferedAmountLowCallback(void *ptr) {
 }
 
 DataChannel::DataChannel(int id) : mId(id), mConnected(false) {
-	rtcSetUserPointer(mId, this);
-	rtcSetOpenCallback(mId, OpenCallback);
-	rtcSetErrorCallback(mId, ErrorCallback);
-	rtcSetMessageCallback(mId, MessageCallback);
-	rtcSetBufferedAmountLowCallback(mId, BufferedAmountLowCallback);
+	js_rtcSetUserPointer(mId, this);
+	js_rtcSetOpenCallback(mId, OpenCallback);
+	js_rtcSetErrorCallback(mId, ErrorCallback);
+	js_rtcSetMessageCallback(mId, MessageCallback);
+	js_rtcSetBufferedAmountLowCallback(mId, BufferedAmountLowCallback);
 
 	char str[256];
-	rtcGetDataChannelLabel(mId, str, 256);
+	js_rtcGetDataChannelLabel(mId, str, 256);
 	mLabel = str;
 }
 
@@ -101,7 +101,7 @@ DataChannel::~DataChannel() { close(); }
 void DataChannel::close() {
 	mConnected = false;
 	if (mId) {
-		rtcDeleteDataChannel(mId);
+		js_rtcDeleteDataChannel(mId);
 		mId = 0;
 	}
 }
@@ -113,9 +113,9 @@ bool DataChannel::send(message_variant message) {
 	return std::visit(
 	    overloaded{[this](const binary &b) {
 		               auto data = reinterpret_cast<const char *>(b.data());
-		               return rtcSendMessage(mId, data, int(b.size())) >= 0;
+		               return js_rtcSendMessage(mId, data, int(b.size())) >= 0;
 	               },
-	               [this](const string &s) { return rtcSendMessage(mId, s.c_str(), -1) >= 0; }},
+	               [this](const string &s) { return js_rtcSendMessage(mId, s.c_str(), -1) >= 0; }},
 	    std::move(message));
 }
 
@@ -123,7 +123,7 @@ bool DataChannel::send(const byte *data, size_t size) {
 	if (!mId)
 		return false;
 
-	return rtcSendMessage(mId, reinterpret_cast<const char *>(data), int(size)) >= 0;
+	return js_rtcSendMessage(mId, reinterpret_cast<const char *>(data), int(size)) >= 0;
 }
 
 bool DataChannel::isOpen() const { return mConnected; }
@@ -134,7 +134,7 @@ size_t DataChannel::bufferedAmount() const {
 	if (!mId)
 		return 0;
 
-	int ret = rtcGetBufferedAmount(mId);
+	int ret = js_rtcGetBufferedAmount(mId);
 	if (ret < 0)
 		return 0;
 
@@ -149,10 +149,10 @@ Reliability DataChannel::reliability() const {
 	if (!mId)
 		return reliability;
 
-	reliability.unordered = rtcGetDataChannelUnordered(mId) ? true : false;
+	reliability.unordered = js_rtcGetDataChannelUnordered(mId) ? true : false;
 
-	int maxRetransmits = rtcGetDataChannelMaxRetransmits(mId);
-	int maxPacketLifeTime = rtcGetDataChannelMaxPacketLifeTime(mId);
+	int maxRetransmits = js_rtcGetDataChannelMaxRetransmits(mId);
+	int maxPacketLifeTime = js_rtcGetDataChannelMaxPacketLifeTime(mId);
 
 	if (maxRetransmits >= 0)
 		reliability.maxRetransmits = unsigned(maxRetransmits);
@@ -167,7 +167,7 @@ void DataChannel::setBufferedAmountLowThreshold(size_t amount) {
 	if (!mId)
 		return;
 
-	rtcSetBufferedAmountLowThreshold(mId, int(amount));
+	js_rtcSetBufferedAmountLowThreshold(mId, int(amount));
 }
 
 void DataChannel::triggerOpen() {
