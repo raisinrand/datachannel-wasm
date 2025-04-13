@@ -41,13 +41,13 @@
 			},
 		},
 
-		wsCreateWebSocket: function(pUrl) {
+		js_wsCreateWebSocket: function(pUrl) {
 			var url = UTF8ToString(pUrl);
 			if(!window.WebSocket) return 0;
 			return WEBSOCKET.registerWebSocket(new WebSocket(url));
 		},
 
-		wsDeleteWebSocket: function(ws) {
+		js_wsDeleteWebSocket: function(ws) {
 			var webSocket = WEBSOCKET.map[ws];
 			if(webSocket) {
 				webSocket.close();
@@ -56,7 +56,7 @@
 			}
 		},
 
-		wsSetOpenCallback: function(ws, openCallback) {
+		js_wsSetOpenCallback: function(ws, openCallback) {
 			if (!ws) return;
 			var webSocket = WEBSOCKET.map[ws];
 			var cb = function() {
@@ -68,7 +68,7 @@
 			if(webSocket.readyState == 1) setTimeout(cb, 0);
 		},
 
- 		wsSetErrorCallback: function(ws, errorCallback) {
+ 		js_wsSetErrorCallback: function(ws, errorCallback) {
 			if (!ws) return;
 			var webSocket = WEBSOCKET.map[ws];
 			var cb = function() {
@@ -79,7 +79,7 @@
 			webSocket.onerror = cb;
 		},
 
-		wsSetMessageCallback: function(ws, messageCallback) {
+		js_wsSetMessageCallback: function(ws, messageCallback) {
 			if (!ws) return;
 			var webSocket = WEBSOCKET.map[ws];
 			webSocket.onmessage = function(evt) {
@@ -107,7 +107,7 @@
 			};
 		},
 
-		wsSendMessage: function(ws, pBuffer, size) {
+		js_wsSendMessage: function(ws, pBuffer, size) {
 			if (!ws) return -1;
 			var webSocket = WEBSOCKET.map[ws];
 			if(webSocket.readyState != 1) return -1;
@@ -128,7 +128,7 @@
 			}
 		},
 
-		wsGetWebSocketUrl: function(ws) {
+		js_wsGetWebSocketUrl: function(ws) {
 			if(!ws) return 0;
 			var webSocket = WEBSOCKET.map[ws];
 			var url = WEBRTC.allocUTF8FromString(webSocket.url);
@@ -136,13 +136,13 @@
 			return url;
 		},
 
-		wsGetWebSocketState: function(ws) {
+		js_wsGetWebSocketState: function(ws) {
 			if(!ws) return WebSocket.CLOSED;
 			var webSocket = WEBSOCKET.map[ws];
 			return webSocket.readyState;
 		},
 
-		wsSetUserPointer: function(ws, ptr) {
+		js_wsSetUserPointer: function(ws, ptr) {
 			var webSocket = WEBSOCKET.map[ws];
 			if(webSocket) webSocket.rtcUserPointer = ptr;
 		},
