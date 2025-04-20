@@ -1415,16 +1415,14 @@ int rtcCreateWebSocket(const char *url) {
 // 	});
 // }
 
-// TODO
-// int rtcDeleteWebSocket(int ws) {
-// 	return wrap([&] {
-// 		auto webSocket = getWebSocket(ws);
-// 		webSocket->forceClose();
-// 		webSocket->resetCallbacks(); // not done on close by WebSocket
-// 		eraseWebSocket(ws);
-// 		return RTC_ERR_SUCCESS;
-// 	});
-// }
+int rtcDeleteWebSocket(int ws) {
+	return wrap([&] {
+		auto webSocket = getWebSocket(ws);
+		webSocket->close();
+		eraseWebSocket(ws);
+		return RTC_ERR_SUCCESS;
+	});
+}
 
 // int rtcGetWebSocketRemoteAddress(int ws, char *buffer, int size) {
 // 	return wrap([&] {
