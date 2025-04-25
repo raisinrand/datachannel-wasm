@@ -889,32 +889,28 @@ int rtcSetBufferedAmountLowCallback(int id, rtcBufferedAmountLowCallbackFunc cb)
 // 	});
 // }
 
-// int rtcCreateDataChannel(int pc, const char *label) {
-// 	return rtcCreateDataChannelEx(pc, label, nullptr);
-// }
-
-int rtcCreateDataChannel(int pc, const char *label) {
+// TODO: this is weird
+int rtcCreateDataChannelEx(int pc, const char *label, const rtcDataChannelInit* init) {
 	return wrap([&] {
 		DataChannelInit dci = {};
-		// if (init) {
-		// 	auto *reliability = &init->reliability;
-		// 	dci.reliability.unordered = reliability->unordered;
-		// 	if (reliability->unreliable) {
-		// 		if (reliability->maxPacketLifeTime > 0) {
-		// 			dci.reliability.type = Reliability::Type::Timed;
-		// 			dci.reliability.rexmit = milliseconds(reliability->maxPacketLifeTime);
-		// 		} else {
-		// 			dci.reliability.type = Reliability::Type::Rexmit;
-		// 			dci.reliability.rexmit = reliability->maxRetransmits;
-		// 		}
-		// 	} else {
-		// 		dci.reliability.type = Reliability::Type::Reliable;
-		// 	}
-
-		// 	dci.negotiated = init->negotiated;
-		// 	dci.id = init->manualStream ? std::make_optional(init->stream) : nullopt;
-		// 	dci.protocol = init->protocol ? init->protocol : "";
-		// }
+		if (init) {
+			auto *reliability = &init->reliability;
+			dci.reliability.unordered = reliability->unordered;
+			if (reliability->unreliable) {
+				if (reliability->maxPacketLifeTime > 0) {
+					// dci.reliability.type = Reliability::Type::Timed;
+					dci.reliability.maxRetransmits = reliability->maxPacketLifeTime;
+				} else {
+					// dci.reliability.type = Reliability::Type::Rexmit;
+					dci.reliability.maxRetransmits = reliability->maxRetransmits;
+				}
+			} else {
+				// dci.reliability.type = Reliability::Type::Reliable;
+			}
+            // 	dci.negotiated = init->negotiated;
+            // 	dci.id = init->manualStream ? std::make_optional(init->stream) : nullopt;
+            // 	dci.protocol = init->protocol ? init->protocol : "";
+		}
 
 		auto peerConnection = getPeerConnection(pc);
 		int dc = emplaceDataChannel(
@@ -925,6 +921,10 @@ int rtcCreateDataChannel(int pc, const char *label) {
 
 		return dc;
 	});
+}
+
+int rtcCreateDataChannel(int pc, const char *label) {
+	return rtcCreateDataChannelEx(pc, label, nullptr);
 }
 
 int rtcDeleteDataChannel(int dc) {

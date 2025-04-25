@@ -241,8 +241,8 @@ typedef struct {
 
 RTC_C_EXPORT int rtcSetDataChannelCallback(int pc, rtcDataChannelCallbackFunc cb);
 RTC_C_EXPORT int rtcCreateDataChannel(int pc, const char *label); // returns dc id
-/* RTC_C_EXPORT int rtcCreateDataChannelEx(int pc, const char *label, */
-/*                                         const rtcDataChannelInit *init); // returns dc id */
+RTC_C_EXPORT int rtcCreateDataChannelEx(int pc, const char *label,
+                                        const rtcDataChannelInit *init); // returns dc id
 RTC_C_EXPORT int rtcDeleteDataChannel(int dc);
 
 RTC_C_EXPORT int rtcGetDataChannelStream(int dc);
